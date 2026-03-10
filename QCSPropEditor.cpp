@@ -39,7 +39,7 @@ QColorPushButton::QColorPushButton(const QString & text, QWidget * parent ) : QP
 {
 	setFlat(true);
 	setAutoFillBackground(true);
-	QObject::connect(this,SIGNAL(clicked()),this,SLOT(ChangeColor()));
+	connect(this,&QPushButton::clicked,this,&QColorPushButton::ChangeColor);
 	//Color.setAlpha(255);
 
 	RGBa c;
@@ -106,7 +106,7 @@ QCSPropEditor::QCSPropEditor(ContinuousStructure *CS, CSProperties* prop, int iS
 	GetValues();
 
 
-	if (propGB!=NULL)
+	if (propGB!=nullptr)
 	{
 		MainLayout->addWidget(propGB);
 	}
@@ -124,7 +124,7 @@ QCSPropEditor::QCSPropEditor(ContinuousStructure *CS, CSProperties* prop, int iS
 
 QCSPropertyGroupBox* QCSPropEditor::BuildPropGroupBox(CSProperties* clProp)
 {
-	QCSPropertyGroupBox* propGB=NULL;
+	QCSPropertyGroupBox* propGB=nullptr;
 	switch (clProp->GetType())
 	{
 		case CSProperties::MATERIAL:
@@ -148,7 +148,7 @@ QCSPropertyGroupBox* QCSPropEditor::BuildPropGroupBox(CSProperties* clProp)
 			propGB = new QCSPropUnknownGB(clProp->ToUnknown());
 			break;
 		default:
-			return NULL;
+			return nullptr;
 			break;
 	};
 	return propGB;
@@ -158,13 +158,13 @@ QCSPropertyGroupBox* QCSPropEditor::BuildPropGroupBox(CSProperties* clProp)
 void QCSPropEditor::Reset()
 {
 	GetValues();
-	if (propGB!=NULL) propGB->GetValues();
+	if (propGB!=nullptr) propGB->GetValues();
 }
 
 void QCSPropEditor::Save()
 {
 	SetValues();
-	if (propGB!=NULL) propGB->SetValues();
+	if (propGB!=nullptr) propGB->SetValues();
 
 	accept();
 }
@@ -180,10 +180,10 @@ void QCSPropEditor::Cancel()
 // 	int type = TypeCB->itemData(item).toInt(&ok);
 // 	if (ok==false) return;
 // 	if (type==clProp->GetType()) return;
-// 	//if (propGB!=NULL) MainLayout->removeWidget(propGB);
+// 	//if (propGB!=nullptr) MainLayout->removeWidget(propGB);
 // 	//if (propGB!=savePropGB) delete propGB;
 // 	if (clProp!=saveProp) delete clProp;
-// 	delete propGB;propGB=NULL;
+// 	delete propGB;propGB=nullptr;
 // 	if (type==saveProp->GetType())
 // 	{
 // 		clProp=saveProp;
@@ -213,7 +213,7 @@ void QCSPropEditor::Cancel()
 // 			break;
 // 	};
 // 	propGB=BuildPropGroupBox(clProp);
-// 	if (propGB!=NULL) MainLayout->insertWidget(1,propGB);
+// 	if (propGB!=nullptr) MainLayout->insertWidget(1,propGB);
 // 	setLayout(MainLayout);
 // }
 
@@ -260,10 +260,10 @@ QGroupBox* QCSPropEditor::BuildGeneral()
 	QVBoxLayout* VLay = new QVBoxLayout();
 	QPushButton* F2EButton = new QPushButton("-->");
 	F2EButton->setFixedSize(30,20);
-	QObject::connect(F2EButton,SIGNAL(clicked()),this,SLOT(Fill2EdgeColor()));
+	connect(F2EButton,&QPushButton::clicked,this,&QCSPropEditor::Fill2EdgeColor);
 	QPushButton* E2FButton = new QPushButton("<--");
 	E2FButton->setFixedSize(30,20);
-	QObject::connect(E2FButton,SIGNAL(clicked()),this,SLOT(Edge2FillColor()));
+	connect(E2FButton,&QPushButton::clicked,this,&QCSPropEditor::Edge2FillColor);
 	VLay->addWidget(F2EButton);
 	VLay->addWidget(E2FButton);
 	HLay->addLayout(VLay);
@@ -284,15 +284,15 @@ QLayout* QCSPropEditor::BuildButtons()
 	QHBoxLayout* lay = new QHBoxLayout();
 
 	QPushButton* ok = new QPushButton(tr("Ok"));
-	QObject::connect(ok,SIGNAL(clicked()),this,SLOT(Save()));
+	connect(ok,&QPushButton::clicked,this,&QCSPropEditor::Save);
 	lay->addWidget(ok);
 	if (QCSX_Settings.GetEdit())
 	{
 		QPushButton* reset = new QPushButton(tr("Reset"));
-		QObject::connect(reset,SIGNAL(clicked()),this,SLOT(Reset()));
+		connect(reset,&QPushButton::clicked,this,&QCSPropEditor::Reset);
 		lay->addWidget(reset);
 		QPushButton* cancel = new QPushButton(tr("Cancel"));
-		QObject::connect(cancel,SIGNAL(clicked()),this,SLOT(Cancel()));
+		connect(cancel,&QPushButton::clicked,this,&QCSPropEditor::Cancel);
 		lay->addWidget(cancel);
 	}
 	lay->addStretch();
@@ -435,7 +435,7 @@ QCSPropExcitationGB::QCSPropExcitationGB(CSPropExcitation *prop, QWidget *parent
 	Type->setEnabled(QCSX_Settings.GetEdit());
 	layout->addWidget(new QLabel(tr("Type: ")),0,2);
 	layout->addWidget(Type,0,3,1,3);
-	QObject::connect(Type,SIGNAL(currentIndexChanged(int)),this,SLOT(TypeChanged(int)));
+	connect(Type,QOverload<int>::of(&QComboBox::currentIndexChanged),this,&QCSPropExcitationGB::TypeChanged);
 
 	layout->addWidget(new QLabel(tr("Excitation (X):")),1,0);
 	Excitation[0] = new QLineEdit();

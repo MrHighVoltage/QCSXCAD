@@ -30,7 +30,7 @@ QParameter::QParameter(Parameter* para, QWidget* parent) : QGroupBox(parent)
 	clPara=para;
 	Name=new QLabel("");
 	Value=new QLineEdit("");
-	QObject::connect(Value,SIGNAL(textEdited(QString)),this,SLOT(Changed()));
+	connect(Value,&QLineEdit::textEdited,this,&QParameter::Changed);
 	
 	
 	lay = new QGridLayout();
@@ -41,13 +41,17 @@ QParameter::QParameter(Parameter* para, QWidget* parent) : QGroupBox(parent)
 	lay->addWidget(Value,0,1);
 	
 	QPushButton* btn = new QPushButton(QIcon(":/images/failed.png"),QString());
-	QObject::connect(btn,SIGNAL(clicked()),this,SLOT(deleteLater()));	
-	QObject::connect(btn,SIGNAL(clicked()),this,SLOT(DeleteParameter()));
+	connect(btn,&QPushButton::clicked,this,&QObject::deleteLater);	
+	connect(btn,&QPushButton::clicked,this,&QParameter::DeleteParameter);
 	btn->setToolTip(tr("Delete parameter"));	
 	lay->addWidget(btn,0,3);
 	
 	SweepCB = new QCheckBox();
-	QObject::connect(SweepCB,SIGNAL(stateChanged(int)),this,SLOT(SweepState(int)));	
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+	connect(SweepCB,&QCheckBox::checkStateChanged,this,[this](Qt::CheckState s){SweepState(static_cast<int>(s));});
+#else
+	connect(SweepCB,&QCheckBox::stateChanged,this,&QParameter::SweepState);
+#endif
 	SweepCB->setToolTip(tr("Sweep this parameter"));
 	lay->addWidget(SweepCB,0,2);
 	
@@ -98,10 +102,10 @@ bool QParameter::Edit()
 	Grid->addWidget(Group,0,0,1,2);
 	
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::accept);
 	Grid->addWidget(PB,1,0);
 	PB = new QPushButton(tr("Cancel"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(reject()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::reject);
 	Grid->addWidget(PB,1,1);
 	
 	diag->setLayout(Grid);
@@ -137,10 +141,10 @@ QLinearParameter::QLinearParameter(LinearParameter* para, QWidget* parent) : QPa
 	slider = new QSlider(Qt::Horizontal);
 	lay->addWidget(slider,1,0,1,3);
 	Value->setReadOnly(true);
-	QObject::connect(slider,SIGNAL(valueChanged(int)),this,SLOT(Changed()));
+	connect(slider,&QSlider::valueChanged,this,&QLinearParameter::Changed);
 
 	QPushButton* btn = new QPushButton(QIcon(":/images/edit.png"),QString());
-	QObject::connect(btn,SIGNAL(clicked()),this,SLOT(Edit()));	
+	connect(btn,&QPushButton::clicked,this,&QLinearParameter::Edit);	
 	lay->addWidget(btn,1,3);
 	btn->setToolTip(tr("Edit Parameter"));
 }
@@ -153,7 +157,7 @@ QLinearParameter::~QLinearParameter()
 bool QLinearParameter::Edit()
 {
 	LinearParameter* LP = clPara->ToLinear();
-	if (LP==NULL) return false;
+	if (LP==nullptr) return false;
 
 	QDialog* diag = new QDialog(this);
 	
@@ -187,10 +191,10 @@ bool QLinearParameter::Edit()
 	Grid->addWidget(Group,0,0,1,2);
 	
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::accept);
 	Grid->addWidget(PB,1,0);
 	PB = new QPushButton(tr("Cancel"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(reject()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::reject);
 	Grid->addWidget(PB,1,1);
 	
 	diag->setLayout(Grid);
@@ -219,7 +223,7 @@ void QLinearParameter::Update()
 {
 	QParameter::Update();
 	LinearParameter* LP=clPara->ToLinear();
-	if (LP==NULL) return;
+	if (LP==nullptr) return;
 	if ((LP->GetStep()>0) && (LP->GetMax()>LP->GetMin()))
 	{
 		double steps=(LP->GetMax()-LP->GetMin())/LP->GetStep();
@@ -233,7 +237,7 @@ void QLinearParameter::Update()
 void QLinearParameter::Changed()
 {
 	LinearParameter* LP=clPara->ToLinear();
-	if (LP==NULL) return;
+	if (LP==nullptr) return;
 	double val=LP->GetMin()+LP->GetStep()*(slider->value()-1);
 	LP->SetValue(val);
 	Value->setText(QString("%1").arg(LP->GetValue()));
@@ -262,7 +266,7 @@ QParameterSet::QParameterSet(QWidget* parent) : QWidget(parent), ParameterSet()
 //	grid->setRowStretch(1,1);
 	
 	QPushButton* btn = new QPushButton(tr("New"));
-	QObject::connect(btn,SIGNAL(clicked()),this,SLOT(NewParameter()));
+	connect(btn,&QPushButton::clicked,this,&QParameterSet::NewParameter);
 	btn->setEnabled(QCSX_Settings.GetEdit());
 	grid->addWidget(btn,2,0);
 	
@@ -313,10 +317,10 @@ void QParameterSet::NewParameter()
 	Grid->addWidget(Group,0,0,1,2);
 	
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::accept);
 	Grid->addWidget(PB,1,0);
 	PB = new QPushButton(tr("Cancel"));
-	QObject::connect(PB,SIGNAL(clicked()),diag,SLOT(reject()));
+	connect(PB,&QPushButton::clicked,diag,&QDialog::reject);
 	Grid->addWidget(PB,1,1);
 	
 	diag->setLayout(Grid);
@@ -325,8 +329,8 @@ void QParameterSet::NewParameter()
 		
 	if (diag->exec()==QDialog::Accepted) 
 	{
-		Parameter* newPara=NULL;
-		QParameter* QPara=NULL;
+		Parameter* newPara=nullptr;
+		QParameter* QPara=nullptr;
 		switch (BG->checkedId())
 		{
 			case 0:
@@ -338,7 +342,7 @@ void QParameterSet::NewParameter()
 				QPara = new QLinearParameter(newPara->ToLinear());
 				break;				
 		}
-		if (newPara!=NULL) 
+		if (newPara!=nullptr) 
 		{
 			if (QPara->Edit()==true) LinkParameter(newPara);
 			else 
@@ -352,7 +356,7 @@ void QParameterSet::NewParameter()
 
 size_t QParameterSet::DeleteParameter(Parameter* para)
 {
-	if (para!=NULL) 
+	if (para!=nullptr) 
 	for (int i=0;i<vecQPara.size();++i)
 	{
 		QParameter* QPara=vecQPara.at(i);
@@ -367,9 +371,9 @@ size_t QParameterSet::DeleteParameter(Parameter* para)
 
 void QParameterSet::AddParaWid(Parameter* newPara)
 {
-	if (newPara!=NULL)
+	if (newPara!=nullptr)
 	{
-		QParameter* QPara=NULL;
+		QParameter* QPara=nullptr;
 		switch (newPara->GetType())
 		{
 			case 0:
@@ -379,14 +383,14 @@ void QParameterSet::AddParaWid(Parameter* newPara)
 				QPara = new QLinearParameter(newPara->ToLinear());
 				break;				
 			default:
-				QPara=NULL;
+				QPara=nullptr;
 				break;
 		}	
-		if (QPara!=NULL) 
+		if (QPara!=nullptr) 
 		{
 			ParaLay->addWidget(QPara);
-			QObject::connect(QPara,SIGNAL(Delete(Parameter*)),this,SLOT(DeleteParameter(Parameter*)));	
-			QObject::connect(QPara,SIGNAL(ParameterChanged()),this,SLOT(SetModified()));	
+			connect(QPara,&QParameter::Delete,this,&QParameterSet::DeleteParameter);	
+			connect(QPara,&QParameter::ParameterChanged,this,[this](){SetModified();});	
 			QPara->Update();
 			vecQPara.append(QPara);
 		}

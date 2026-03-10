@@ -18,7 +18,11 @@
 #ifndef _QVTKSTRUCTURE_H_
 #define _QVTKSTRUCTURE_H_
 
-#include <QtGui>
+#include <QObject>
+#include <QVector>
+#include <QString>
+
+class QWidget;
 
 #include "vtkVersion.h"
 #if VTK_MAJOR_VERSION>=9

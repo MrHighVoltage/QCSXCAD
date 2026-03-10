@@ -79,18 +79,18 @@ VTKPrimitives::VTKPrimitives(vtkRenderer *Renderer)
 VTKPrimitives::~VTKPrimitives()
 {
 	ActorColl->InitTraversal();
-	vtkActor* act=NULL;
+	vtkActor* act=nullptr;
 	while ((act=ActorColl->GetNextActor()))
 	{
 		ren->RemoveActor(act);
 		act->Delete();
 	}
 	ActorColl->Delete();
-	ActorColl=NULL;
+	ActorColl=nullptr;
 
 	if (m_PolyDataCollection)
 		m_PolyDataCollection->Delete();
-	m_PolyDataCollection=NULL;
+	m_PolyDataCollection=nullptr;
 }
 
 VTKPrimitives::VTKPrimitives()
@@ -153,8 +153,8 @@ void VTKPrimitives::AddCylindricalCube(const double *start, const double *stop, 
 
 void VTKPrimitives::AddCylindricalCube(double *dCoords, double *dRGB, double dOpacity, const double* tf_matrix)
 {
-	vtkPolyDataAlgorithm* PDSource = NULL;
-	vtkPolyDataAlgorithm* PDFilter = NULL;
+	vtkPolyDataAlgorithm* PDSource = nullptr;
+	vtkPolyDataAlgorithm* PDFilter = nullptr;
 
 	if ( (dCoords[2]!=dCoords[3]) )
 	{
@@ -198,7 +198,7 @@ void VTKPrimitives::AddCylindricalCube(double *dCoords, double *dRGB, double dOp
 			return AddLinePoly(TransformCylindricalCoords(dCoords,out,2),2,1,dRGB,dOpacity);
 		}
 
-		if (PDSource==NULL)
+		if (PDSource==nullptr)
 			return;
 
 		vtkRotationalExtrusionFilter *extrude = vtkRotationalExtrusionFilter::New();
@@ -237,7 +237,7 @@ void VTKPrimitives::AddCylindricalCube(double *dCoords, double *dRGB, double dOp
 		PDFilter = Source;
 	}
 
-	if (PDFilter==NULL)
+	if (PDFilter==nullptr)
 		return;
 
 	AddPolyData(PDFilter->GetOutputPort(), dRGB, dOpacity, tf_matrix);
@@ -849,7 +849,7 @@ vtkActor* VTKPrimitives::AddPolyData(vtkAlgorithmOutput* polydata_port, double *
 void VTKPrimitives::SetOpacity2All(double opacity)
 {
 	ActorColl->InitTraversal();
-	vtkActor* act=NULL;
+	vtkActor* act=nullptr;
 	while ((act=ActorColl->GetNextActor()))
 	{
 		act->GetProperty()->SetOpacity(opacity);

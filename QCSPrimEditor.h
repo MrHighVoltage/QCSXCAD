@@ -43,7 +43,7 @@ class QCSPrimEditor : public QDialog
 {
 	Q_OBJECT
 public:
-	QCSPrimEditor(ContinuousStructure *CS, CSPrimitives* prim, QWidget* parent=NULL);
+	QCSPrimEditor(ContinuousStructure *CS, CSPrimitives* prim, QWidget* parent=nullptr);
 	virtual ~QCSPrimEditor();
 	
 protected slots:
@@ -70,7 +70,7 @@ class QCSPrimitiveLayout : public QGridLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimitiveLayout(CSPrimitives* prim, QWidget *parent=NULL);
+	QCSPrimitiveLayout(CSPrimitives* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimitiveLayout();
 	
 public slots:
@@ -90,7 +90,7 @@ class QCSPrimBoxLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimBoxLayout(CSPrimBox* prim, QWidget *parent=NULL);
+	QCSPrimBoxLayout(CSPrimBox* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimBoxLayout();
 	
 public slots:
@@ -109,7 +109,7 @@ class QCSPrimSphereLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimSphereLayout(CSPrimSphere* prim, QWidget *parent=NULL);
+	QCSPrimSphereLayout(CSPrimSphere* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimSphereLayout();
 	
 public slots:
@@ -128,7 +128,7 @@ class QCSPrimCylinderLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimCylinderLayout(CSPrimCylinder* prim, QWidget *parent=NULL);
+	QCSPrimCylinderLayout(CSPrimCylinder* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimCylinderLayout();
 	
 public slots:
@@ -147,7 +147,7 @@ class QCSPrimCylindricalShellLayout : public QCSPrimCylinderLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimCylindricalShellLayout(CSPrimCylindricalShell* prim, QWidget *parent=NULL);
+	QCSPrimCylindricalShellLayout(CSPrimCylindricalShell* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimCylindricalShellLayout();
 
 public slots:
@@ -166,7 +166,7 @@ class QCSPrimMultiBoxLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimMultiBoxLayout(CSPrimMultiBox* prim, QWidget *parent=NULL);
+	QCSPrimMultiBoxLayout(CSPrimMultiBox* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimMultiBoxLayout();
 	
 public slots:
@@ -174,9 +174,9 @@ public slots:
 	virtual void GetValues();
 	
 protected slots:
-	void NewBox(QListWidgetItem* item=NULL);
-	void DeleteBox(QListWidgetItem* item=NULL);
-	void EditBox(QListWidgetItem* item=NULL);
+	void NewBox(QListWidgetItem* item=nullptr);
+	void DeleteBox(QListWidgetItem* item=nullptr);
+	void EditBox(QListWidgetItem* item=nullptr);
 	
 signals:
 	void modified();
@@ -192,7 +192,7 @@ class QCSPrimPolygonLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimPolygonLayout(CSPrimPolygon* prim, QWidget *parent=NULL);
+	QCSPrimPolygonLayout(CSPrimPolygon* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimPolygonLayout();
 	
 public slots:
@@ -217,7 +217,7 @@ class QCSPrimUserDefinedLayout : public QCSPrimitiveLayout
 {
 	Q_OBJECT
 public:
-	QCSPrimUserDefinedLayout(CSPrimUserDefined* prim, QWidget *parent=NULL);
+	QCSPrimUserDefinedLayout(CSPrimUserDefined* prim, QWidget *parent=nullptr);
 	virtual ~QCSPrimUserDefinedLayout();
 	
 public slots:

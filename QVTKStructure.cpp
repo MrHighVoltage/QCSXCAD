@@ -91,13 +91,13 @@
 
 QVTKStructure::QVTKStructure()
 {
-	clCS=NULL;
-	ActorGridPlane[0]=NULL;
-	ActorGridPlane[1]=NULL;
-	ActorGridPlane[2]=NULL;
-	m_Rect_Grid = NULL;
-	m_Struct_Grid = NULL;
-	m_CamData = NULL;
+	clCS=nullptr;
+	ActorGridPlane[0]=nullptr;
+	ActorGridPlane[1]=nullptr;
+	ActorGridPlane[2]=nullptr;
+	m_Rect_Grid = nullptr;
+	m_Struct_Grid = nullptr;
+	m_CamData = nullptr;
 
 	iResolution=32;
 	AllowUpdate=true;
@@ -170,7 +170,7 @@ void QVTKStructure::SetBackgroundColor(int r, int g, int b)
 
 	for (int i=0;i<3;++i)
 	{
-		if (ActorGridPlane[i]!=NULL) ActorGridPlane[i]->GetProperty()->SetColor(irgb);
+		if (ActorGridPlane[i]!=nullptr) ActorGridPlane[i]->GetProperty()->SetColor(irgb);
 	}
 	GetRenderWindow()->GetInteractor()->Render();
 }
@@ -197,25 +197,25 @@ void QVTKStructure::clear()
 
 	for (int i=0; i<3; i++)
 	{
-		if (ActorGridPlane[i]!=NULL)
+		if (ActorGridPlane[i]!=nullptr)
 		{
 			ren->RemoveActor(ActorGridPlane[i]);
 			ActorGridPlane[i]->Delete();
-			ActorGridPlane[i]=NULL;
+			ActorGridPlane[i]=nullptr;
 		}
 	}
 	if (m_Rect_Grid)
 		m_Rect_Grid->Delete();
-	m_Rect_Grid=NULL;
+	m_Rect_Grid=nullptr;
 	if (m_Struct_Grid)
 		m_Struct_Grid->Delete();
-	m_Struct_Grid=NULL;
+	m_Struct_Grid=nullptr;
 }
 
 
 void QVTKStructure::RenderGrid()
 {
-	if (clCS==NULL) return;
+	if (clCS==nullptr) return;
 	CSRectGrid* CSGrid = clCS->GetGrid();
 	if (CSGrid->isValid()==false)
 		return;
@@ -253,7 +253,7 @@ void QVTKStructure::RenderGrid()
 		m_Struct_Grid = vtkStructuredGrid::New();
 
 		unsigned int uiQty[3];
-		double* lines[3]={NULL,NULL,NULL};
+		double* lines[3]={nullptr,nullptr,nullptr};
 		for (unsigned int n=0;n<3;++n)
 			lines[n] = CSGrid->GetLines(n,lines[n],uiQty[n]);
 
@@ -276,7 +276,7 @@ void QVTKStructure::RenderGrid()
 		for (unsigned int n=0;n<3;++n)
 		{
 			delete[] lines[n];
-			lines[n] = NULL;
+			lines[n] = nullptr;
 		}
 	}
 	else
@@ -308,7 +308,7 @@ void QVTKStructure::RenderGridZ(int plane_pos)
 
 void QVTKStructure::RenderGridDir(int dir, unsigned int plane_pos)
 {
-	if (ActorGridPlane[dir]!=NULL)
+	if (ActorGridPlane[dir]!=nullptr)
 	{
 		ren->RemoveActor(ActorGridPlane[dir]);
 		ActorGridPlane[dir]->Delete();
@@ -316,7 +316,7 @@ void QVTKStructure::RenderGridDir(int dir, unsigned int plane_pos)
 
 	ActorGridPlane[dir] = vtkLODActor::New();
 	vtkPolyDataMapper *gridMapper = vtkPolyDataMapper::New();
-	vtkPolyDataAlgorithm *plane = NULL;
+	vtkPolyDataAlgorithm *plane = nullptr;
 
 	CSRectGrid* CSGrid = clCS->GetGrid();
 	int uiQty[3];
@@ -331,11 +331,11 @@ void QVTKStructure::RenderGridDir(int dir, unsigned int plane_pos)
 
 	if (CSGrid->GetMeshType()==CARTESIAN)
 	{
-		if (m_Rect_Grid==NULL)
+		if (m_Rect_Grid==nullptr)
 		{
 			ActorGridPlane[dir]->Delete();
 			gridMapper->Delete();
-			ActorGridPlane[dir]=NULL;
+			ActorGridPlane[dir]=nullptr;
 			std::cerr << "QVTKStructure::RenderGridDir: Error, rect grid mesh was not created, skipping drawing..." << std::endl;
 			return;
 		}
@@ -367,11 +367,11 @@ void QVTKStructure::RenderGridDir(int dir, unsigned int plane_pos)
 	}
 	else if (CSGrid->GetMeshType()==CYLINDRICAL)
 	{
-		if (m_Struct_Grid==NULL)
+		if (m_Struct_Grid==nullptr)
 		{
 			ActorGridPlane[dir]->Delete();
 			gridMapper->Delete();
-			ActorGridPlane[dir]=NULL;
+			ActorGridPlane[dir]=nullptr;
 			std::cerr << "QVTKStructure::RenderGridDir: Error, structured grid mesh was not created, skipping drawing..." << std::endl;
 			return;
 		}
@@ -424,7 +424,7 @@ void QVTKStructure::SetGridOpacity(int val)
 	if (AllowUpdate==false) return;
 	for (int i=0;i<3;++i)
 	{
-		if (ActorGridPlane[i]!=NULL) ActorGridPlane[i]->GetProperty()->SetOpacity((double)val/255.0);
+		if (ActorGridPlane[i]!=nullptr) ActorGridPlane[i]->GetProperty()->SetOpacity((double)val/255.0);
 	}
 	GetRenderWindow()->GetInteractor()->Render();
 }
@@ -482,7 +482,7 @@ void QVTKStructure::SetPropOpacity(unsigned int uiID, int val)
 	{
 		if (LayerPrimitives.at(i).uID==uiID)
 		{
-			if (LayerPrimitives.at(i).VTKProp!=NULL) LayerPrimitives.at(i).VTKProp->SetOpacity2All((double)val/255.0);
+			if (LayerPrimitives.at(i).VTKProp!=nullptr) LayerPrimitives.at(i).VTKProp->SetOpacity2All((double)val/255.0);
 		}
 	}
 	GetRenderWindow()->GetInteractor()->Render();
@@ -495,12 +495,12 @@ void QVTKStructure::RenderGeometry()
 		delete LayerPrimitives.at(i).VTKProp;
 	}
 	LayerPrimitives.clear();
-	if (clCS==NULL) return;
+	if (clCS==nullptr) return;
 	int QtyProp=clCS->GetQtyProperties();
 	for (int i=0;i<QtyProp;++i)
 	{
 		CSProperties* prop = clCS->GetProperty(i);
-		if (prop==NULL) return;
+		if (prop==nullptr) return;
 		int QtyPrim=prop->GetQtyPrimitives();
 		if (QtyPrim>0)
 		{
@@ -515,10 +515,10 @@ void QVTKStructure::RenderGeometry()
 			for (int n=0;n<QtyPrim;++n)
 			{
 				CSPrimitives* prim = prop->GetPrimitive(n);
-				if (prim==NULL) return;
+				if (prim==nullptr) return;
 				CoordinateSystem primCS = prim->GetCoordinateSystem();
 				CSTransform* transform = prim->GetTransform();
-				double* transform_matrix = NULL;
+				double* transform_matrix = nullptr;
 				if (transform)
 					transform_matrix = transform->GetMatrix();
 				if (primCS==UNDEFINED_CS)
@@ -587,7 +587,7 @@ void QVTKStructure::RenderGeometry()
 				case CSPrimitives::LINPOLY:
 				case CSPrimitives::ROTPOLY:
 				{
-					CSPrimPolygon* poly = NULL;
+					CSPrimPolygon* poly = nullptr;
 					if (prim->GetType()==CSPrimitives::POLYGON)
 						poly = prim->ToPolygon();
 					else if (prim->GetType()==CSPrimitives::LINPOLY)
@@ -620,7 +620,7 @@ void QVTKStructure::RenderGeometry()
 						double angles[2] = {prim->ToRotPoly()->GetAngle(0)*180/PI,prim->ToRotPoly()->GetAngle(1)*180/PI};
 						vtkPrims->AddRotationalPoly(dCoords,nrPts,dVector,angles,rgb,(double)col.a/255.0,32,transform_matrix);
 					}
-					delete[] dCoords; dCoords=NULL;
+					delete[] dCoords; dCoords=nullptr;
 					break;
 				}
 				case CSPrimitives::POLYHEDRONREADER:
@@ -661,7 +661,7 @@ void QVTKStructure::RenderGeometry()
 				case CSPrimitives::CURVE:
 				case CSPrimitives::WIRE:
 				{
-					CSPrimCurve* curve = NULL;
+					CSPrimCurve* curve = nullptr;
 					if (prim->GetType()==CSPrimitives::CURVE)
 						curve = prim->ToCurve();
 					else
@@ -685,7 +685,7 @@ void QVTKStructure::RenderGeometry()
 						CSPrimWire* wire = prim->ToWire();
 						vtkPrims->AddTubePoly(dCoords,nrP,wire->GetWireRadius(),rgb,(double)col.a/255.0,8,transform_matrix);
 					}
-					delete[] dCoords; dCoords=NULL;
+					delete[] dCoords; dCoords=nullptr;
 					break;
 				}
 				}
@@ -703,7 +703,7 @@ void QVTKStructure::RenderDiscMaterialModel()
 	}
 	m_DiscMatModels.clear();
 
-	if (clCS==NULL) return;
+	if (clCS==nullptr) return;
 
 	for (unsigned int i=0;i<clCS->GetQtyProperties();++i)
 	{
@@ -722,7 +722,7 @@ void QVTKStructure::RenderDiscMaterialModel()
 			CSTransform* transform = new CSTransform(dm_prop->GetTransform());
 			transform->SetPreMultiply();
 			transform->Scale(dm_prop->GetScale());
-			double* transform_matrix = NULL;
+			double* transform_matrix = nullptr;
 			if (transform)
 				transform_matrix = transform->GetMatrix();
 			vtkPrims->AddPolyData(polydata,rgb,1.0,transform_matrix);
@@ -754,7 +754,7 @@ void QVTKStructure::Set2DInteractionStyle(bool val, bool render)
 
 void QVTKStructure::SaveCamData()
 {
-	if (m_CamData==NULL)
+	if (m_CamData==nullptr)
 		m_CamData = new CamData;
 
 	vtkCamera *Camera = ren->GetActiveCamera();
@@ -767,7 +767,7 @@ void QVTKStructure::SaveCamData()
 
 void QVTKStructure::RestoreCamData(bool render)
 {
-	if (m_CamData==NULL)
+	if (m_CamData==nullptr)
 		return;
 
 	vtkCamera *Camera = ren->GetActiveCamera();
@@ -805,7 +805,7 @@ void QVTKStructure::ExportProperty2PolyDataVTK(unsigned int uiID, QString filena
 	{
 		if (LayerPrimitives.at(i).uID==uiID)
 		{
-			if (LayerPrimitives.at(i).VTKProp!=NULL)
+			if (LayerPrimitives.at(i).VTKProp!=nullptr)
 			{
 				QString name = filename + ".vtp";
 				LayerPrimitives.at(i).VTKProp->WritePolyData2File(name.toStdString().c_str(), scale);
@@ -817,7 +817,7 @@ void QVTKStructure::ExportProperty2PolyDataVTK(unsigned int uiID, QString filena
 	{
 		if (m_DiscMatModels.at(i).uID==uiID)
 		{
-			if (m_DiscMatModels.at(i).vtk_model!=NULL)
+			if (m_DiscMatModels.at(i).vtk_model!=nullptr)
 			{
 				QString name = filename + "_DiscMaterial" + ".vtp";
 				m_DiscMatModels.at(i).vtk_model->WritePolyData2File(name.toStdString().c_str(), scale);
@@ -832,7 +832,7 @@ void QVTKStructure::ExportProperty2STL(unsigned int uiID, QString filename, doub
 	{
 		if (LayerPrimitives.at(i).uID==uiID)
 		{
-			if (LayerPrimitives.at(i).VTKProp!=NULL)
+			if (LayerPrimitives.at(i).VTKProp!=nullptr)
 			{
 				QString name = filename + ".stl";
 				LayerPrimitives.at(i).VTKProp->WritePolyData2STL(name.toStdString().c_str(), scale);
@@ -847,7 +847,7 @@ void QVTKStructure::ExportProperty2PLY(unsigned int uiID, QString filename, doub
 	{
 		if (LayerPrimitives.at(i).uID==uiID)
 		{
-			if (LayerPrimitives.at(i).VTKProp!=NULL)
+			if (LayerPrimitives.at(i).VTKProp!=nullptr)
 			{
 				QString name = filename + ".ply";
 				LayerPrimitives.at(i).VTKProp->WritePolyData2PLY(name.toStdString().c_str(), scale);

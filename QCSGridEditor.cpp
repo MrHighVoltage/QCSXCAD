@@ -45,7 +45,7 @@ QCSGridEditor::QCSGridEditor(CSRectGrid* grid, QWidget* parent) : QWidget(parent
 		lay->addWidget(m_DirNames[n],n+1,0);
 	}
 
-	QLabel* label=NULL;
+	QLabel* label=nullptr;
 	for (unsigned int i=0;i<6;++i)
 	{
 		label=new QLabel("0");
@@ -66,26 +66,26 @@ QCSGridEditor::QCSGridEditor(CSRectGrid* grid, QWidget* parent) : QWidget(parent
 	if (QCSX_Settings.GetEdit()==false)
 		EditText = tr("View");
 	QPushButton* PB = new QPushButton(QIcon(":/images/edit.png"),EditText);
-	QObject::connect(PB,SIGNAL(clicked()),this,SLOT(EditX()));
+	connect(PB,&QPushButton::clicked,this,&QCSGridEditor::EditX);
 	lay->addWidget(PB,1,4);
 
 	PB = new QPushButton(QIcon(":/images/edit.png"),EditText);
-	QObject::connect(PB,SIGNAL(clicked()),this,SLOT(EditY()));
+	connect(PB,&QPushButton::clicked,this,&QCSGridEditor::EditY);
 	lay->addWidget(PB,2,4);
 
 	PB = new QPushButton(QIcon(":/images/edit.png"),EditText);
-	QObject::connect(PB,SIGNAL(clicked()),this,SLOT(EditZ()));
+	connect(PB,&QPushButton::clicked,this,&QCSGridEditor::EditZ);
 	lay->addWidget(PB,3,4);
 
 	lay->addWidget(new QLabel(tr("Drawing unit [m]:")),4,0,1,2);
 	UnitLength = new QLineEdit("1");
 	UnitLength->setEnabled(QCSX_Settings.GetEdit());
-	QObject::connect(UnitLength,SIGNAL(textEdited(QString)),this,SLOT(SetDeltaUnit(QString)));
+	connect(UnitLength,&QLineEdit::textEdited,this,&QCSGridEditor::SetDeltaUnit);
 	lay->addWidget(UnitLength,4,2,1,3);
 
 	OpacitySlider = new QSlider(Qt::Horizontal);
 	OpacitySlider->setRange(0,255);
-	QObject::connect(OpacitySlider,SIGNAL(valueChanged(int)),this,SIGNAL(OpacityChange(int)));
+	connect(OpacitySlider,&QSlider::valueChanged,this,&QCSGridEditor::OpacityChange);
 	lay->addWidget(new QLabel(tr("Grid opacity")),5,0,1,3);
 	lay->addWidget(OpacitySlider,5,2,1,3);
 
@@ -123,13 +123,13 @@ QWidget* QCSGridEditor::BuildPlanePosWidget()
 		m_PlanePosValue[n] = new QLabel();
 		lay->addWidget(m_PlanePosValue[n],n,2);
 	}
-	QObject::connect(m_PlanePos[0],SIGNAL(valueChanged(int)),this,SIGNAL(GridPlaneXChanged(int)));
-	QObject::connect(m_PlanePos[1],SIGNAL(valueChanged(int)),this,SIGNAL(GridPlaneYChanged(int)));
-	QObject::connect(m_PlanePos[2],SIGNAL(valueChanged(int)),this,SIGNAL(GridPlaneZChanged(int)));
+	connect(m_PlanePos[0],&QSlider::valueChanged,this,&QCSGridEditor::GridPlaneXChanged);
+	connect(m_PlanePos[1],&QSlider::valueChanged,this,&QCSGridEditor::GridPlaneYChanged);
+	connect(m_PlanePos[2],&QSlider::valueChanged,this,&QCSGridEditor::GridPlaneZChanged);
 
-	QObject::connect(m_PlanePos[0],SIGNAL(valueChanged(int)),this,SLOT(SetGridPlaneX(int)));
-	QObject::connect(m_PlanePos[1],SIGNAL(valueChanged(int)),this,SLOT(SetGridPlaneY(int)));
-	QObject::connect(m_PlanePos[2],SIGNAL(valueChanged(int)),this,SLOT(SetGridPlaneZ(int)));
+	connect(m_PlanePos[0],&QSlider::valueChanged,this,&QCSGridEditor::SetGridPlaneX);
+	connect(m_PlanePos[1],&QSlider::valueChanged,this,&QCSGridEditor::SetGridPlaneY);
+	connect(m_PlanePos[2],&QSlider::valueChanged,this,&QCSGridEditor::SetGridPlaneZ);
 
 	PPWid->setLayout(lay);
 	return PPWid;
@@ -196,9 +196,9 @@ void QCSGridEditor::BuildInHomogenDisc()
 	}
 
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),HomogenDisc,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,HomogenDisc,&QDialog::accept);
 	QPushButton* PBcancel = new QPushButton(tr("Cancel"));
-	QObject::connect(PBcancel,SIGNAL(clicked()),HomogenDisc,SLOT(reject()));
+	connect(PBcancel,&QPushButton::clicked,HomogenDisc,&QDialog::reject);
 
 	QHBoxLayout* hLay = new QHBoxLayout();
 	hLay->addStretch(1);
@@ -298,9 +298,9 @@ void QCSGridEditor::BuildHomogenDisc()
 		Check[i]->setChecked(true);
 	}
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),HomogenDisc,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,HomogenDisc,&QDialog::accept);
 	QPushButton* PBcancel = new QPushButton(tr("Cancel"));
-	QObject::connect(PBcancel,SIGNAL(clicked()),HomogenDisc,SLOT(reject()));
+	connect(PBcancel,&QPushButton::clicked,HomogenDisc,&QDialog::reject);
 
 	QHBoxLayout* hLay = new QHBoxLayout();
 	hLay->addStretch(1);
@@ -362,9 +362,9 @@ void QCSGridEditor::IncreaseResolution()
 	lay->addWidget(Spin[2],4,1);
 
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),DiscInc,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,DiscInc,&QDialog::accept);
 	QPushButton* PBcancel = new QPushButton(tr("Cancel"));
-	QObject::connect(PBcancel,SIGNAL(clicked()),DiscInc,SLOT(reject()));
+	connect(PBcancel,&QPushButton::clicked,DiscInc,&QDialog::reject);
 
 	QHBoxLayout* hLay = new QHBoxLayout();
 	hLay->addStretch(1);
@@ -404,7 +404,7 @@ void QCSGridEditor::EditZ()
 
 double* QCSGridEditor::GetDoubleArrayFromString(int *count, QString qsValue)
 {
-	double* values=NULL;
+	double* values=nullptr;
 	*count = 0;
 	QStringList seq = qsValue.split(":");
 	if (seq.size()==3)
@@ -446,12 +446,12 @@ void QCSGridEditor::Edit(int direct)
 	if (QCSX_Settings.GetEdit())
 		lay->addWidget(new QLabel(tr("Allowed syntax example: 0,10, 20, 30:1.5e1:100, 50 , sqrt(1000:-10:200)")),1,0,1,4);
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),EditDisc,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,EditDisc,&QDialog::accept);
 	lay->addWidget(PB,2,1);
 	if (QCSX_Settings.GetEdit())
 	{
 		PB = new QPushButton(tr("Cancel"));
-		QObject::connect(PB,SIGNAL(clicked()),EditDisc,SLOT(reject()));
+		connect(PB,&QPushButton::clicked,EditDisc,&QDialog::reject);
 		lay->addWidget(PB,2,2);
 	}
 
@@ -474,27 +474,21 @@ void QCSGridEditor::Edit(int direct)
 			else
 			{
 				QString FloatExp("-?\\d+(.\\d+)?(e-?\\d+)?");
-				QRegExp qre(FloatExp + ":" + FloatExp + ":" + FloatExp);
-				if (qre.exactMatch(qsValue))
+				QString seqPattern = FloatExp + ":" + FloatExp + ":" + FloatExp;
+				QRegularExpression qre(seqPattern);
+				QRegularExpressionMatch reMatch = QRegularExpression("\\A" + seqPattern + "\\z").match(qsValue);
+				if (reMatch.hasMatch())
 				{
 					int count=0;
 					double* values = GetDoubleArrayFromString(&count,qsValue);
 					if (values) clGrid->AddDiscLines(direct,count,values);
 				}
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-				else if (QRegExp(FloatExp + ":" + FloatExp + ":" + FloatExp).indexIn(qsValue) != -1)
-#else
-				else if (qsValue.contains(QRegExp(FloatExp + ":" + FloatExp + ":" + FloatExp)))
-#endif
+				else if ((reMatch = qre.match(qsValue)).hasMatch())
 				{
-					qre.indexIn(qsValue);
-					QString seq = qre.cap();
+					QString seq = reMatch.captured();
 //					cerr << "found-->" << seq.toStdString() <<  endl;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-					QString function = QRegExp(FloatExp + ":" + FloatExp + ":" + FloatExp).replaceIn(qsValue, GetDirName(direct));
-#else
-					QString function = qsValue.replace(QRegExp(FloatExp + ":" + FloatExp + ":" + FloatExp),GetDirName(direct));
-#endif
+					QString function = qsValue;
+					function.replace(qre, GetDirName(direct));
 //					cerr << function.toStdString() << endl;
 					int count=0;
 					double* values = GetDoubleArrayFromString(&count,seq);
@@ -526,9 +520,9 @@ void QCSGridEditor::DetectEdges()
 	lay->addWidget(Check[2],4,0);
 
 	QPushButton* PB = new QPushButton(tr("Ok"));
-	QObject::connect(PB,SIGNAL(clicked()),Edges,SLOT(accept()));
+	connect(PB,&QPushButton::clicked,Edges,&QDialog::accept);
 	QPushButton* PBcancel = new QPushButton(tr("Cancel"));
-	QObject::connect(PBcancel,SIGNAL(clicked()),Edges,SLOT(reject()));
+	connect(PBcancel,&QPushButton::clicked,Edges,&QDialog::reject);
 
 	QHBoxLayout* hLay = new QHBoxLayout();
 	hLay->addStretch(1);

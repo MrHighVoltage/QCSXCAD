@@ -40,7 +40,7 @@ class QCSXCAD_EXPORT QCSXCAD : public QMainWindow, public ContinuousStructure
 	friend class export_X3D;
 	friend class export_pov;
 public:
-	QCSXCAD(QWidget *parent=NULL);
+	QCSXCAD(QWidget *parent=nullptr);
 	virtual ~QCSXCAD();
 
 	enum ViewMode

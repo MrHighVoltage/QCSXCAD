@@ -16,7 +16,8 @@
 */
 
 #include <QMessageBox>
-#include <QtXml>
+#include <QFile>
+#include <QFileInfo>
 
 #include "QVTKStructure.h"
 #include <vtkRendererCollection.h>
@@ -88,7 +89,7 @@ void export_pov::save( QString filename )
 
 void export_pov::export_properties( QTextStream &stream, std::vector<CSProperties*> properties, QString default_obj_modifier )
 {
-	foreach( CSProperties* prop, properties )
+	for ( CSProperties* prop : properties )
 	{
 		int size = prop->GetQtyPrimitives();
 		for( int i=0; i<size; i++ )

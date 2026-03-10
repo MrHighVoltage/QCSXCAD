@@ -114,7 +114,7 @@ void QCSPrimEditor::Save()
 {
 	CSPrim->SetPriority(PrioSpinBox->value());
 	CSProperties* prop = clCS->GetProperty((unsigned int)PropertiesComboBox->currentIndex());
-	if (prop==NULL)
+	if (prop==nullptr)
 	{
 		std::cerr << __func__ << ": Error, property invalid!" << std::endl;
 		reject();
@@ -162,15 +162,15 @@ QLayout* QCSPrimEditor::BuildButtons()
 	QHBoxLayout* lay = new QHBoxLayout();
 	
 	QPushButton* ok = new QPushButton(tr("Ok"));
-	QObject::connect(ok,SIGNAL(clicked()),this,SLOT(Save()));
+	connect(ok,&QPushButton::clicked,this,&QCSPrimEditor::Save);
 	lay->addWidget(ok);
 	if (QCSX_Settings.GetEdit())
 	{
 		QPushButton* reset = new QPushButton(tr("Reset"));
-		QObject::connect(reset,SIGNAL(clicked()),this,SLOT(Reset()));
+		connect(reset,&QPushButton::clicked,this,&QCSPrimEditor::Reset);
 		lay->addWidget(reset);
 		QPushButton* cancel = new QPushButton(tr("Cancel"));
-		QObject::connect(cancel,SIGNAL(clicked()),this,SLOT(Cancel()));
+		connect(cancel,&QPushButton::clicked,this,&QCSPrimEditor::Cancel);
 		lay->addWidget(cancel);
 	}
 		
@@ -185,7 +185,7 @@ void QCSPrimEditor::UpdatePropertyCB()
 	{
 		QString str;
 		CSProperties* prop=clCS->GetProperty(i);
-		if (prop==NULL) break;
+		if (prop==nullptr) break;
 		str=QString(prop->GetName().c_str());
 		switch (prop->GetType())
 		{
@@ -215,7 +215,7 @@ void QCSPrimEditor::UpdatePropertyCB()
 	}
 
 	CSProperties* prop=CSPrim->GetProperty();
-	if (prop==NULL) PropertiesComboBox->setCurrentIndex(0);
+	if (prop==nullptr) PropertiesComboBox->setCurrentIndex(0);
 	else  PropertiesComboBox->setCurrentIndex(prop->GetID());
 }
 
@@ -477,17 +477,17 @@ QCSPrimMultiBoxLayout::QCSPrimMultiBoxLayout(CSPrimMultiBox* prim, QWidget *pare
 	clMultiBox=prim;
 	
 	QPushButton *addButton = new QPushButton("Add Box");
-	QObject::connect(addButton,SIGNAL(clicked()),this,SLOT(NewBox()));
+	connect(addButton,&QPushButton::clicked,this,[this](){NewBox();});
 	addWidget(addButton,0,0);
 	addButton->setEnabled(QCSX_Settings.GetEdit());
 
 	QPushButton *editButton = new QPushButton("Edit Box");
-	QObject::connect(editButton,SIGNAL(clicked()),this,SLOT(EditBox()));
+	connect(editButton,&QPushButton::clicked,this,[this](){EditBox();});
 	addWidget(editButton,0,1);
 	editButton->setEnabled(QCSX_Settings.GetEdit());
 
 	QPushButton *deleteButton = new QPushButton("Delete Box");
-	QObject::connect(deleteButton,SIGNAL(clicked()),this,SLOT(DeleteBox()));
+	connect(deleteButton,&QPushButton::clicked,this,[this](){DeleteBox();});
 	addWidget(deleteButton,0,2);
 	deleteButton->setEnabled(QCSX_Settings.GetEdit());
 
@@ -523,7 +523,7 @@ void QCSPrimMultiBoxLayout::NewBox(QListWidgetItem* item)
 //	unsigned int nr=qBoxList->count()
 //	clMultiBox->ClearOverlap();
 //	qBoxList->addItem(tr("Box #%1").arg(nr));
-//	if (item==NULL) clMultiBox->AddBox();
+//	if (item==nullptr) clMultiBox->AddBox();
 //	else clMultiBox->AddBox(qBoxList->row(item));
 }
 
@@ -547,7 +547,7 @@ QCSPrimPolygonLayout::QCSPrimPolygonLayout(CSPrimPolygon* prim, QWidget *parent)
 	NormVec->addItem(tr("yz-plane"));
 	NormVec->addItem(tr("zx-plane"));
 	NormVec->addItem(tr("xy-plane"));
-	QObject::connect(NormVec,SIGNAL(currentIndexChanged(int)),this,SLOT(NormVecChanged()));
+	connect(NormVec,QOverload<int>::of(&QComboBox::currentIndexChanged),this,&QCSPrimPolygonLayout::NormVecChanged);
 	addWidget(NormVec,0,1);
 	NormVec->setEnabled(QCSX_Settings.GetEdit());
 	
@@ -742,7 +742,7 @@ void QCSPrimUserDefinedLayout::GetValues()
 	for (size_t i=0; i< 3; ++i)
 	{
 		ps=clUserDef->GetCoordShiftPS(i);
-		if (ps==NULL) return;
+		if (ps==nullptr) return;
 		if (ps->GetMode()) CoordShift[i]->setText(ps->GetString().c_str());
 		else CoordShift[i]->setText(QString("%1").arg(ps->GetValue()));
 	}

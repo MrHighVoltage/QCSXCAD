@@ -18,7 +18,7 @@
 #ifndef _QCSGRIDEDITOR_H_
 #define _QCSGRIDEDITOR_H_
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QWidget>
 #include <QToolBar>
 #include <QString>

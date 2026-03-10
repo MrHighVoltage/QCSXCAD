@@ -6,10 +6,8 @@ ELSE()
   SET( CMAKE_BUILD_TYPE Release CACHE STRING "Set to either \"Release\" or \"Debug\"" )
 ENDIF()
 
-# In CMake 4, 3.10 is deprecated and 3.5 has been removed.
-# use 3.0...3.10 so all of these versions are acceptable as min. version.
-# https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html
-cmake_minimum_required(VERSION 3.0...3.10)
+# Qt6 requires CMake 3.16+
+cmake_minimum_required(VERSION 3.16)
 
 PROJECT( QCSXCAD CXX C)
 
@@ -120,20 +118,12 @@ INCLUDE_DIRECTORIES (${VTK_INCLUDE_DIRS})
 SET(RESOURCES resources.qrc)
 set(CMAKE_AUTOMOC ON)
 
-# Both Qt6 support and the variable VTK_QT_VERSION are introduced in vTK
+# Both Qt6 support and the variable VTK_QT_VERSION are introduced in VTK
 # 9.1. Below VTK 9, we don't know the Qt version used by VTK, so we make
-# a guess and hope for the best. Since Qt6 is not officially supported
-# before 9.1, we guess Qt4 or Qt5.
+# a guess and default to Qt5.
 # https://gitlab.kitware.com/vtk/vtk/-/merge_requests/7483
 if (NOT DEFINED VTK_QT_VERSION)
-    FIND_PACKAGE(Qt4 COMPONENTS QtCore QUIET)
-    if (Qt4_FOUND)
-        SET(VTK_QT_VERSION "4")
-    else()
-        SET(VTK_QT_VERSION "5")
-    # Probably no need to check for Qt6 here, since Qt6 is only supported by VTK 9.1+
-    # which exposes VTK_QT_VERSION
-    endif()
+    SET(VTK_QT_VERSION "5")
     message(
       WARNING
       "VTK_QT_VERSION is unsupported before VTK 9.1, "
@@ -143,37 +133,18 @@ if (NOT DEFINED VTK_QT_VERSION)
 endif()
 
 if(VTK_QT_VERSION VERSION_GREATER "5")
-    FIND_PACKAGE(Qt6 COMPONENTS Core Core5Compat Widgets Xml REQUIRED)
-    set(QT_LIBRARIES Qt6::Core5Compat Qt6::Widgets Qt6::Xml)
+    FIND_PACKAGE(Qt6 COMPONENTS Core Widgets Xml REQUIRED)
+    set(QT_LIBRARIES Qt6::Widgets Qt6::Xml)
     QT6_ADD_RESOURCES(RESOURCES_SRCS ${RESOURCES})
-elseif(VTK_QT_VERSION VERSION_GREATER "4")
+else()
     FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Xml REQUIRED)
     set(QT_LIBRARIES Qt5::Widgets Qt5::Xml)
     QT5_ADD_RESOURCES(RESOURCES_SRCS ${RESOURCES})
-else()
-    # in Qt4, QT_LIBRARIES is set by CMake
-    FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtXml)
-    INCLUDE( ${QT_USE_FILE} )
-    INCLUDE_DIRECTORIES(${QT_INCLUDES})
-    QT4_ADD_RESOURCES(RESOURCES_SRCS ${RESOURCES})
 endif()
 
 message(STATUS "Found/guessed VTK's Qt version. Using version " ${VTK_QT_VERSION})
 
-if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set( vtk_LIBS ${VTK_LIBRARIES} )
-else()
-    set( vtk_LIBS
-        vtkCommon
-        vtkFiltering
-        vtkGraphics
-        vtkHybrid
-        vtkIO
-        vtkRendering
-        vtkWidgets
-        QVTK
-        )
-endif()
+set( vtk_LIBS ${VTK_LIBRARIES} )
 message(STATUS "vtk libraries " ${vtk_LIBS})
     
 set( SOURCES

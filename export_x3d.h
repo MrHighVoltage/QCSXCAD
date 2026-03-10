@@ -18,7 +18,7 @@
 #ifndef EXPORT_X3D_H
 #define EXPORT_X3D_H
 
-#include <QtXml>
+#include <QDomDocument>
 #include <QString>
 
 class QCSXCAD;

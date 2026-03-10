@@ -23,7 +23,9 @@
 #include <vtkRenderer.h>
 #include <vtkCamera.h>
 
-#include <QtXml>
+#include <QDomDocument>
+#include <QFile>
+#include <QTextStream>
 #include <vector>
 #include <ContinuousStructure.h>
 #include "CSPrimBox.h"
@@ -106,7 +108,7 @@ void export_X3D::save( QString filename )
 
 void export_X3D::export_properties( QDomElement Scene, std::vector<CSProperties*> properties, QDomElement Material )
 {
-	foreach( CSProperties* prop, properties )
+	for ( CSProperties* prop : properties )
 	{
 		int size = prop->GetQtyPrimitives();
 		for( int i=0; i<size; i++ )

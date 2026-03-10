@@ -18,7 +18,7 @@
 #ifndef EXPORT_POV_H
 #define EXPORT_POV_H
 
-#include <QtXml>
+#include <QTextStream>
 #include <QString>
 
 class QCSXCAD;

@@ -31,7 +31,7 @@ class QParameter : public QGroupBox
 {
 	Q_OBJECT
 public:
-	QParameter(Parameter* para, QWidget* parent=NULL);
+	QParameter(Parameter* para, QWidget* parent=nullptr);
 	virtual ~QParameter();
 	
 	Parameter* GetParameter() {return clPara;};
@@ -61,7 +61,7 @@ class QLinearParameter : public QParameter
 {
 	Q_OBJECT
 public:
-	QLinearParameter(LinearParameter* para, QWidget* parent=NULL);
+	QLinearParameter(LinearParameter* para, QWidget* parent=nullptr);
 	virtual ~QLinearParameter();
  		
 signals:
@@ -81,7 +81,7 @@ class QParameterSet : public QWidget, public ParameterSet
 {
 	Q_OBJECT
 public:
-	QParameterSet(QWidget* parent=NULL);
+	QParameterSet(QWidget* parent=nullptr);
 	virtual ~QParameterSet();
 
 	virtual size_t LinkParameter(Parameter* newPara);

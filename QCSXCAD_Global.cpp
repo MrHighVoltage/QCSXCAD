@@ -17,7 +17,7 @@
 
 #include <cstring>
 #include <iostream>
-#include <QtCore>
+#include <QString>
 #include "QCSXCAD_Global.h"
 
 // create global object

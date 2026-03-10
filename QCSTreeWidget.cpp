@@ -32,8 +32,8 @@ QCSTreeWidget::QCSTreeWidget(ContinuousStructure* CS, QWidget * parent) : QTreeW
 //	qTree->setDragEnabled(true);
 //	qTree->setAcceptDrops(true);
 //	qTree->setDropIndicatorShown(true);
-	QObject::connect(this,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(Edit(QTreeWidgetItem*,int)));
-	QObject::connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(Clicked(QTreeWidgetItem*,int)));
+	connect(this,&QTreeWidget::itemDoubleClicked,this,QOverload<QTreeWidgetItem*,int>::of(&QCSTreeWidget::Edit));
+	connect(this,&QTreeWidget::itemClicked,this,&QCSTreeWidget::Clicked);
 }
 
 QCSTreeWidget::~QCSTreeWidget()
@@ -43,29 +43,29 @@ QCSTreeWidget::~QCSTreeWidget()
 CSProperties* QCSTreeWidget::GetCurrentProperty()
 {
 	QTreeWidgetItem* curr=currentItem();
-	if (curr==NULL) return NULL;
+	if (curr==nullptr) return nullptr;
 	if (curr->type()==PRIMTYPE) curr=curr->parent();
-	if (curr==NULL) return NULL;
+	if (curr==nullptr) return nullptr;
 	return clCS->GetProperty(indexOfTopLevelItem(curr));
 }
 
 CSPrimitives* QCSTreeWidget::GetCurrentPrimitive()
 {
 	QTreeWidgetItem* curr=currentItem();
-	if (curr==NULL) return NULL;
-	if (curr->type()!=PRIMTYPE) return NULL;
+	if (curr==nullptr) return nullptr;
+	if (curr->type()!=PRIMTYPE) return nullptr;
 	return clCS->GetPrimitiveByID(curr->data(0,1).toInt());
 }
 
 void QCSTreeWidget::AddPrimItem(CSPrimitives* prim)
 {
-	if (prim==NULL)
+	if (prim==nullptr)
 		return;
 	int propID=clCS->GetIndex(prim->GetProperty());
 	if (propID<0)
 		return;
 	QTreeWidgetItem* parent = topLevelItem(propID);
-	if (parent==NULL)
+	if (parent==nullptr)
 		return;
 	QString str = QString(prim->GetTypeName().c_str());
 
@@ -78,7 +78,7 @@ void QCSTreeWidget::AddPrimItem(CSPrimitives* prim)
 void QCSTreeWidget::AddPropItem(CSProperties* prop)
 {
 	QString str;
-	if (prop==NULL) return;
+	if (prop==nullptr) return;
 	str=QString(prop->GetTypeXMLString().c_str())+"::";
 	str+=QString::fromUtf8(prop->GetName().c_str());
 		
@@ -94,7 +94,7 @@ QTreeWidgetItem* QCSTreeWidget::GetTreeItemByPrimID(int primID)
 	for (int n=0;n<vPrimItems.size();++n)
 		if (vPrimItems.at(n)->data(0,1).toInt()==primID)
 			return vPrimItems.at(n);
-	return NULL;
+	return nullptr;
 }
 
 int QCSTreeWidget::GetTreeItemIndexByPrimID(int primID)
@@ -121,7 +121,7 @@ void QCSTreeWidget::DeletePropItem(CSProperties* prop)
 	int index=clCS->GetIndex(prop);
 	
 	QTreeWidgetItem* parent = topLevelItem(index);
-	if (parent==NULL) return;
+	if (parent==nullptr) return;
 	
 	delete parent;
 }
@@ -129,9 +129,9 @@ void QCSTreeWidget::DeletePropItem(CSProperties* prop)
 void QCSTreeWidget::RefreshItem(int index)
 {
 	CSProperties* prop=clCS->GetProperty(index);
-	if (prop==NULL) return;
+	if (prop==nullptr) return;
 	QTreeWidgetItem* item = topLevelItem(index);
-	if (item==NULL) return;
+	if (item==nullptr) return;
 	QString str=QString(prop->GetTypeXMLString().c_str())+"::";
 	str+=QString::fromUtf8(prop->GetName().c_str());
 	item->setText(0,str);	
@@ -181,7 +181,7 @@ void QCSTreeWidget::UpdateTree()
 	{
 		QString str;
 		CSProperties* prop=clCS->GetProperty(i);
-		if (prop==NULL) break;
+		if (prop==nullptr) break;
 		AddPropItem(prop);
 	}
 
@@ -199,17 +199,17 @@ void QCSTreeWidget::ClearTree()
 void QCSTreeWidget::SwitchProperty(CSPrimitives* prim, CSProperties* newProp)
 {
 	int index=GetTreeItemIndexByPrimID(prim->GetID());
-	QTreeWidgetItem *item=NULL;
+	QTreeWidgetItem *item=nullptr;
 	if ((index>=0) && (index<vPrimItems.size()))
 		item=vPrimItems.at(index);
 	else
 		return;
 
 	QTreeWidgetItem *parent=item->parent();
-	if (parent==NULL)
+	if (parent==nullptr)
 		return;
 	QTreeWidgetItem *newParent = topLevelItem(clCS->GetIndex(newProp));
-	if (newParent==NULL)
+	if (newParent==nullptr)
 		return;
 
 	parent->takeChild(parent->indexOfChild(item));
@@ -229,14 +229,14 @@ void QCSTreeWidget::expandAll()
 void QCSTreeWidget::Edit(QTreeWidgetItem * item, int column)
 {
 	UNUSED(column);
-	if (item==NULL) return;
+	if (item==nullptr) return;
 	if (item->type()!=PRIMTYPE) return;
 	emit Edit();
 }
 
 void QCSTreeWidget::Clicked(QTreeWidgetItem * item, int column)
 {
-	if (item==NULL) return;
+	if (item==nullptr) return;
 	if (item->type()!=PROPTYPE) return;
 	if (column==1) {emit ShowHide();}
 }

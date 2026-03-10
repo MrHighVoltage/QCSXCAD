@@ -54,7 +54,7 @@ class QCSPropEditor : public QDialog
 {
 	Q_OBJECT
 public:
-	QCSPropEditor(ContinuousStructure *CS, CSProperties* prop, int iSimMode, QWidget* parent=NULL);
+	QCSPropEditor(ContinuousStructure *CS, CSProperties* prop, int iSimMode, QWidget* parent=nullptr);
 	~QCSPropEditor() {};
 
 protected slots:
@@ -105,7 +105,7 @@ public:
 	virtual ~QCSPropertyGroupBox();
 
 protected:
-	QCSPropertyGroupBox(QWidget *parent=NULL);
+	QCSPropertyGroupBox(QWidget *parent=nullptr);
 
 	QString TypeName;
 	QString GetTypeName() {return TypeName;};
@@ -123,7 +123,7 @@ class QCSPropUnknownGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropUnknownGB(CSPropUnknown *prop, QWidget *parent=NULL);
+	QCSPropUnknownGB(CSPropUnknown *prop, QWidget *parent=nullptr);
 	virtual ~QCSPropUnknownGB();
 
 public slots:
@@ -144,7 +144,7 @@ class QCSPropMaterialGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropMaterialGB(CSPropMaterial *prop, QWidget *parent=NULL);
+	QCSPropMaterialGB(CSPropMaterial *prop, QWidget *parent=nullptr);
 	virtual ~QCSPropMaterialGB();
 
 public slots:
@@ -162,7 +162,7 @@ class QCSPropExcitationGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropExcitationGB(CSPropExcitation *prop, QWidget *parent=NULL);
+	QCSPropExcitationGB(CSPropExcitation *prop, QWidget *parent=nullptr);
 	virtual ~QCSPropExcitationGB();
 
 public slots:
@@ -190,7 +190,7 @@ class QCSPropProbeBoxGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropProbeBoxGB(CSPropProbeBox *prop, QWidget *parent=NULL);
+	QCSPropProbeBoxGB(CSPropProbeBox *prop, QWidget *parent=nullptr);
 	virtual ~QCSPropProbeBoxGB();
 
 public slots:
@@ -210,7 +210,7 @@ class QCSPropResBoxGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropResBoxGB(CSPropResBox *prop, QWidget *parent=NULL);
+	QCSPropResBoxGB(CSPropResBox *prop, QWidget *parent=nullptr);
 	virtual ~QCSPropResBoxGB();
 
 public slots:
@@ -230,7 +230,7 @@ class QCSPropDumpBoxGB : public QCSPropertyGroupBox
 {
 	Q_OBJECT
 public:
-	QCSPropDumpBoxGB(CSPropDumpBox *prop, int SimMode, QWidget *parent=NULL);
+	QCSPropDumpBoxGB(CSPropDumpBox *prop, int SimMode, QWidget *parent=nullptr);
 	virtual ~QCSPropDumpBoxGB();
 
 public slots:

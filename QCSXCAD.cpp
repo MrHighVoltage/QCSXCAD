@@ -19,6 +19,10 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QAction>
+#include <QActionGroup>
+#include <QApplication>
+#include <QKeyEvent>
+#include <QProcess>
 
 #include "QCSXCAD.h"
 #include "QVTKStructure.h"
@@ -86,22 +90,22 @@ QCSXCAD::QCSXCAD(QWidget *parent) : QMainWindow(parent)
 	setCentralWidget(StructureVTK->GetVTKWidget());
 
 	CSTree = new QCSTreeWidget(this);
-	QObject::connect(CSTree,SIGNAL(Edit()),this,SLOT(Edit()));
-	QObject::connect(CSTree,SIGNAL(Copy()),this,SLOT(Copy()));
-	QObject::connect(CSTree,SIGNAL(ShowHide()),this,SLOT(ShowHide()));
-	QObject::connect(CSTree,SIGNAL(Delete()),this,SLOT(Delete()));
-	QObject::connect(CSTree,SIGNAL(NewBox()),this,SLOT(NewBox()));
-	QObject::connect(CSTree,SIGNAL(NewMultiBox()),this,SLOT(NewMultiBox()));
-	QObject::connect(CSTree,SIGNAL(NewSphere()),this,SLOT(NewSphere()));
-	QObject::connect(CSTree,SIGNAL(NewCylinder()),this,SLOT(NewCylinder()));
-	QObject::connect(CSTree,SIGNAL(NewUserDefined()),this,SLOT(NewUserDefined()));
+	connect(CSTree,QOverload<>::of(&QCSTreeWidget::Edit),this,&QCSXCAD::Edit);
+	connect(CSTree,&QCSTreeWidget::Copy,this,&QCSXCAD::Copy);
+	connect(CSTree,&QCSTreeWidget::ShowHide,this,&QCSXCAD::ShowHide);
+	connect(CSTree,&QCSTreeWidget::Delete,this,&QCSXCAD::Delete);
+	connect(CSTree,&QCSTreeWidget::NewBox,this,&QCSXCAD::NewBox);
+	connect(CSTree,&QCSTreeWidget::NewMultiBox,this,&QCSXCAD::NewMultiBox);
+	connect(CSTree,&QCSTreeWidget::NewSphere,this,&QCSXCAD::NewSphere);
+	connect(CSTree,&QCSTreeWidget::NewCylinder,this,&QCSXCAD::NewCylinder);
+	connect(CSTree,&QCSTreeWidget::NewUserDefined,this,&QCSXCAD::NewUserDefined);
 
-	QObject::connect(CSTree,SIGNAL(NewMaterial()),this,SLOT(NewMaterial()));
-	QObject::connect(CSTree,SIGNAL(NewMetal()),this,SLOT(NewMetal()));
-	QObject::connect(CSTree,SIGNAL(NewExcitation()),this,SLOT(NewExcitation()));
-	QObject::connect(CSTree,SIGNAL(NewChargeBox()),this,SLOT(NewChargeBox()));
-	QObject::connect(CSTree,SIGNAL(NewResBox()),this,SLOT(NewResBox()));
-	QObject::connect(CSTree,SIGNAL(NewDumpBox()),this,SLOT(NewDumpBox()));
+	connect(CSTree,&QCSTreeWidget::NewMaterial,this,&QCSXCAD::NewMaterial);
+	connect(CSTree,&QCSTreeWidget::NewMetal,this,&QCSXCAD::NewMetal);
+	connect(CSTree,&QCSTreeWidget::NewExcitation,this,&QCSXCAD::NewExcitation);
+	connect(CSTree,&QCSTreeWidget::NewChargeBox,this,&QCSXCAD::NewChargeBox);
+	connect(CSTree,&QCSTreeWidget::NewResBox,this,&QCSXCAD::NewResBox);
+	connect(CSTree,&QCSTreeWidget::NewDumpBox,this,&QCSXCAD::NewDumpBox);
 
 	QDockWidget *dock = new QDockWidget(tr("Properties and Structures"),this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -112,12 +116,12 @@ QCSXCAD::QCSXCAD(QWidget *parent) : QMainWindow(parent)
 	addDockWidget(Qt::LeftDockWidgetArea,dock);
 
 	GridEditor = new QCSGridEditor(&clGrid);
-	QObject::connect(GridEditor,SIGNAL(OpacityChange(int)),StructureVTK,SLOT(SetGridOpacity(int)));
-	QObject::connect(GridEditor,SIGNAL(signalDetectEdges(int)),this,SLOT(DetectEdges(int)));
-	QObject::connect(GridEditor,SIGNAL(GridChanged()),StructureVTK,SLOT(RenderGrid()));
-	QObject::connect(GridEditor,SIGNAL(GridPlaneXChanged(int)),StructureVTK,SLOT(RenderGridX(int)));
-	QObject::connect(GridEditor,SIGNAL(GridPlaneYChanged(int)),StructureVTK,SLOT(RenderGridY(int)));
-	QObject::connect(GridEditor,SIGNAL(GridPlaneZChanged(int)),StructureVTK,SLOT(RenderGridZ(int)));
+	connect(GridEditor,&QCSGridEditor::OpacityChange,StructureVTK,&QVTKStructure::SetGridOpacity);
+	connect(GridEditor,&QCSGridEditor::signalDetectEdges,this,&QCSXCAD::DetectEdges);
+	connect(GridEditor,&QCSGridEditor::GridChanged,StructureVTK,&QVTKStructure::RenderGrid);
+	connect(GridEditor,&QCSGridEditor::GridPlaneXChanged,StructureVTK,&QVTKStructure::RenderGridX);
+	connect(GridEditor,&QCSGridEditor::GridPlaneYChanged,StructureVTK,&QVTKStructure::RenderGridY);
+	connect(GridEditor,&QCSGridEditor::GridPlaneZChanged,StructureVTK,&QVTKStructure::RenderGridZ);
 
 	dock = new QDockWidget(tr("Rectilinear Grid"),this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -127,8 +131,8 @@ QCSXCAD::QCSXCAD(QWidget *parent) : QMainWindow(parent)
 	addDockWidget(Qt::LeftDockWidgetArea,dock);
 
 	QParaSet= new QParameterSet();
-	QObject::connect(QParaSet,SIGNAL(ParameterChanged()),this,SLOT(CheckGeometry()));
-	QObject::connect(QParaSet,SIGNAL(ParameterChanged()),this,SLOT(setModified()));
+	connect(QParaSet,&QParameterSet::ParameterChanged,this,&QCSXCAD::CheckGeometry);
+	connect(QParaSet,&QParameterSet::ParameterChanged,this,&QCSXCAD::setModified);
 	clParaSet=QParaSet;
 
 	dock = new QDockWidget(tr("Rectilinear Grid - Plane Position"),this);
@@ -184,7 +188,7 @@ void QCSXCAD::aboutQCSXCAD(QWidget* parent)
 	QPushButton* qtButton = new QPushButton(QIcon(":/images/qt-logo.png"),QString());
 	qtButton->setToolTip(tr("About Qt"));
 	qtButton->setIconSize(QSize(50,50));
-	QObject::connect(qtButton,SIGNAL(clicked()),qApp,SLOT(aboutQt()));
+	connect(qtButton,&QPushButton::clicked,qApp,&QApplication::aboutQt);
 	qtinfo->setText(QString("GUI-Toolkit: Qt by Trolltech (OSS) <br>Version: %1<br>http://www.trolltech.com/<br>License: GNU General Public License (GPL)").arg(QT_VERSION,0,16));
 	qtinfo->setAlignment(Qt::AlignLeft);
 
@@ -220,7 +224,7 @@ void QCSXCAD::aboutQCSXCAD(QWidget* parent)
 	infoLayout->addWidget(DependGroup,2,1,1,3);
 
 	QPushButton* OKBut = new QPushButton(tr("Ok"));
-	QObject::connect(OKBut,SIGNAL(clicked()),&infoWidget,SLOT(accept()));
+	connect(OKBut,&QPushButton::clicked,&infoWidget,&QDialog::accept);
 	infoLayout->addWidget(OKBut,3,2);
 
 	infoLayout->setColumnStretch(1,1);
@@ -274,13 +278,13 @@ bool QCSXCAD::CheckGeometry()
 
 TiXmlNode* QCSXCAD::FindRootNode(TiXmlNode* node)
 {
-	if (node==NULL) return NULL;
+	if (node==nullptr) return nullptr;
 	TiXmlElement* child = node->FirstChildElement("ContinuousStructure");
 	if (child)
 		return node;
 	child=node->FirstChildElement();
-	TiXmlNode* found=NULL;
-	while (child!=NULL)
+	TiXmlNode* found=nullptr;
+	while (child!=nullptr)
 	{
 		if (child->FirstChildElement("ContinuousStructure"))
 			return child;
@@ -289,12 +293,12 @@ TiXmlNode* QCSXCAD::FindRootNode(TiXmlNode* node)
 			return found;
 		child = node->NextSiblingElement();
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool QCSXCAD::ReadNode(TiXmlNode* root)
 {
-	if (root==NULL) return false;
+	if (root==nullptr) return false;
 	clear();
 	QString msg(ReadFromXML(root));
 	if (msg.isEmpty()==false) QMessageBox::warning(this,tr("Geometry read error"),tr("An geometry read error occured!!\n\n")+msg,QMessageBox::Ok,QMessageBox::NoButton);
@@ -326,7 +330,7 @@ bool QCSXCAD::ReadFile(QString filename)
 		//try to find a root node somewhere else...
 		root = FindRootNode(&doc);
 	}
-	if (root==NULL)
+	if (root==nullptr)
 	{
 		QMessageBox::warning(this,tr("Geometry read error"),tr("Can't find root CSX node!!"),QMessageBox::Ok,QMessageBox::NoButton);
 		return false;
@@ -401,7 +405,7 @@ bool QCSXCAD::isGeometryValid()
 void QCSXCAD::ImportGeometry()
 {
 	QString filter;
-	QString filename=QFileDialog::getOpenFileName(0,tr("Choose geometry file"),NULL,tr("XML-File (*.xml)"),&filter);
+	QString filename=QFileDialog::getOpenFileName(0,tr("Choose geometry file"),nullptr,tr("XML-File (*.xml)"),&filter);
 	if (filename.isEmpty())
 		return;
 	ReadFile(filename);
@@ -410,7 +414,7 @@ void QCSXCAD::ImportGeometry()
 void QCSXCAD::Edit()
 {
 	CSPrimitives* prim = CSTree->GetCurrentPrimitive();
-	if (prim!=NULL)
+	if (prim!=nullptr)
 	{
 		CSProperties* oldProp=prim->GetProperty();
 		QCSPrimEditor* newEdit = new QCSPrimEditor(this,prim);
@@ -425,7 +429,7 @@ void QCSXCAD::Edit()
 		return;
 	}
 	CSProperties* prop = CSTree->GetCurrentProperty();
-	if (prop!=NULL)
+	if (prop!=nullptr)
 	{
 		int index=GetIndex(prop);
 		QCSPropEditor* newEdit = new QCSPropEditor(this,prop,m_SimMode);
@@ -440,10 +444,10 @@ void QCSXCAD::Edit()
 void QCSXCAD::Copy()
 {
 	CSPrimitives* prim = CSTree->GetCurrentPrimitive();
-	if (prim!=NULL)
+	if (prim!=nullptr)
 	{
 		CSPrimitives* newPrim=prim->GetCopy();
-		if (newPrim==NULL)
+		if (newPrim==nullptr)
 			return;
 		QCSPrimEditor* newEdit = new QCSPrimEditor(this,newPrim);
 		if (newEdit->exec()==QDialog::Accepted)
@@ -486,7 +490,7 @@ void QCSXCAD::SetParallelProjection(bool val)
 void QCSXCAD::ShowHide()
 {
 	CSProperties* prop = CSTree->GetCurrentProperty();
-	if (prop!=NULL)
+	if (prop!=nullptr)
 	{
 		prop->SetVisibility(!prop->GetVisibility());
 		CSTree->RefreshItem(GetIndex(prop));
@@ -498,7 +502,7 @@ void QCSXCAD::ShowHide()
 void QCSXCAD::Delete()
 {
 	CSPrimitives* prim = CSTree->GetCurrentPrimitive();
-	if (prim!=NULL)
+	if (prim!=nullptr)
 	{
 		if (QMessageBox::question(this,tr("Delete Primitive"),tr("Delete current Primitive (ID: %1)?").arg(prim->GetID()),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 		{
@@ -509,7 +513,7 @@ void QCSXCAD::Delete()
 		return;
 	}
 	CSProperties* prop = CSTree->GetCurrentProperty();
-	if (prop!=NULL)
+	if (prop!=nullptr)
 	{
 		size_t qtyPrim=prop->GetQtyPrimitives();
 		if (qtyPrim>0)
@@ -560,7 +564,7 @@ void QCSXCAD::NewPrimitive(CSPrimitives* newPrim)
 {
 	if (GetQtyProperties()==0)
 	{
-		QMessageBox::question(this,tr("New Primitive"),tr("No Property available. You have to add one first!"),QMessageBox::Ok);
+		QMessageBox::information(this,tr("New Primitive"),tr("No Property available. You have to add one first!"));
 		delete newPrim;
 		return;
 	}
@@ -714,11 +718,11 @@ void QCSXCAD::New()
 
 void QCSXCAD::ExportGeometry()
 {
-	QString qFilename=QFileDialog::getSaveFileName(0,"Choose Geometrie File",NULL,"SimGeometryXML (*.xml)");
+	QString qFilename=QFileDialog::getSaveFileName(0,"Choose Geometrie File",nullptr,"SimGeometryXML (*.xml)");
 	if (qFilename.isEmpty()) return;
 	if (!qFilename.endsWith(".xml")) qFilename+=".xml";
 
-	if (Write2XML(qFilename.toLatin1().data())==false) QMessageBox::warning(this,tr("Geometry Export"),tr("Unknown error occured! Geometry Export failed"),1,0);
+	if (Write2XML(qFilename.toLatin1().data())==false) QMessageBox::warning(this,tr("Geometry Export"),tr("Unknown error occured! Geometry Export failed"));
 }
 
 void QCSXCAD::ExportGeometry_Povray()
@@ -731,8 +735,8 @@ void QCSXCAD::ExportGeometry_Povray()
 	pov.save( filename );
 
 	// start povray?
-	int ans = QMessageBox::question( 0, "Start Povray", "Should the file directly be rendered?", "Yes", "No", "", 0, 1 );
-	if (ans == 1)
+	int ans = QMessageBox::question( this, "Start Povray", "Should the file directly be rendered?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+	if (ans == QMessageBox::No)
 		return;
 
 	// start povray
@@ -779,7 +783,7 @@ void QCSXCAD::ExportGeometry(QString dirname, int type)
 	for (int i=0;i<QtyProp;++i)
 	{
 		CSProperties* prop = GetProperty(i);
-		if (prop==NULL) continue;
+		if (prop==nullptr) continue;
 
 		 unsigned int uID = prop->GetUniqueID();
 
@@ -876,8 +880,8 @@ void QCSXCAD::BuildToolBar()
 	ItemTB->addAction(QIcon(":/images/bulb.png"),tr("ShowAll"),this,SLOT(ShowAll()));
 	ItemTB->addAction(QIcon(":/images/bulb_off.png"),tr("HideAll"),this,SLOT(HideAll()));
 
-	QToolBar *newObjct = NULL;
-	QAction* newAct = NULL;
+	QToolBar *newObjct = nullptr;
+	QAction* newAct = nullptr;
 
 	if (QCSX_Settings.GetEdit())
 	{
@@ -951,7 +955,7 @@ void QCSXCAD::BuildToolBar()
 	newAct->setCheckable(true);
 	m_PPview = newObjct->addAction(tr("PP"));
 	m_PPview->setToolTip(tr("Toggle parallel projection view mode"));
-	QObject::connect(m_PPview,SIGNAL(toggled(bool)),this,SLOT(SetParallelProjection(bool)));
+	connect(m_PPview,&QAction::toggled,this,&QCSXCAD::SetParallelProjection);
 	m_PPview->setCheckable(true);
 
 	if (QCSX_Settings.GetEdit())
@@ -991,7 +995,7 @@ void QCSXCAD::keyPressEvent(QKeyEvent * event)
 {
 	if (event->key()==Qt::Key_Delete) Delete();
 	if (event->key()==Qt::Key_Escape)
-		CSTree->setCurrentItem(NULL);
+		CSTree->setCurrentItem(nullptr);
 	QMainWindow::keyPressEvent(event);
 }
 
